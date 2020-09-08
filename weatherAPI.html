@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      Weather API test
+    </title>
+    <style>
+
+      body {
+        display: flex;
+        justify-content: center;
+        background-image: linear-gradient(to right, blue 15%, white 135%);
+      }
+
+      #weatherDiv {
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-template-rows: auto auto auto;
+        grid-gap: 1rem;
+        filter: opacity(0);
+        transition: filter 1000ms;
+      }
+
+      #cityDiv {
+        grid-column: 1 / 3;
+        grid-row: 1/ 2;
+        font-size: 2rem;
+        text-align: center;
+        color: white;
+      }
+
+      #tempDiv {
+        grid-column: 1 / 2;
+        grid-row: 2 / 3;
+        text-align: center;
+        color: white;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        border: .1rem solid black;
+        border-radius: .5rem;
+      }
+
+      #tempWrap {
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #tempSpan {
+        font-size: 3rem;
+      }
+
+      #tempBox {
+        border-top: 1px solid black;
+        padding: .25rem;
+      }
+
+      #iconDiv {
+        grid-column: 2 / 3;
+        grid-row: 2 / 3;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        color: white;
+        border: .1rem solid black;
+        border-radius: .5rem;
+      }
+
+      #weatherIcon {
+        height: 100px;
+        margin: auto;
+      }
+
+      #weatherDescription {
+        border-top: 1px solid black;
+        padding: .25rem;
+      }
+
+      #humidityDiv {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        color: white;
+        text-align: center;
+        border: .1rem solid black;
+        border-radius: .5rem;
+      }
+
+      #humidityWrap {
+        height: 100px;
+        padding: .25rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #humiditySpan {
+        font-size: 3rem;
+      }
+
+      #humidityBox {
+        border-top: 1px solid black;
+        padding: .25rem;
+      }
+
+      #compass {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        color: white;
+        border: .1rem solid black;
+        border-radius: .5rem;
+      }
+
+      #svgCompass {
+        margin: auto;
+        padding: .25rem;
+      }
+
+      .line {
+        stroke: white;
+        transform-origin: center center;
+      }
+
+      #direction {
+        x: 49px;
+        y: 10px;
+        height: 40px;
+        width: 2px;
+        fill: white;
+        transform-origin: 50px 50px;
+      }
+
+      #windDiv {
+        border-top: 1px solid black;
+        padding: .25rem;
+        text-align: center;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="weatherDiv">
+      <div id="cityDiv">
+      </div>
+      <div id="tempDiv">
+        <div id="tempWrap">
+          <span id="tempSpan"></span>
+        </div>
+        <div id="tempBox">temperature</div>
+      </div>
+      <div id="iconDiv">
+        <img id="weatherIcon">
+        <div id="weatherDescription"></div>
+      </div>
+      <div id="humidityDiv">
+        <div id="humidityWrap">
+          <span id="humiditySpan"></span>
+        </div>
+        <div id="humidityBox">humidity</div>
+      </div>
+      <div id="compass">
+        <svg id="svgCompass" height="100" width="100">
+          <circle cx="50"
+                  cy="50"
+                  r="49"
+                  stroke="white"
+                  stroke-width="1" fill="none" />
+        </svg>
+        <div id="windDiv">
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    fetch("https://api.openweathermap.org/data/2.5/weather?id=3526501&appid=9a5d233125e5fb51927ccee602c54cb4")
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(myJson) {
+        console.log(myJson);
+        weatherData = myJson;
+        display(weatherData);
+      });
+
+      function makeCompass(deg) {
+
+        function makeSVG(type) {
+          let svg = document.createElementNS("http://www.w3.org/2000/svg", type);
+          if (arguments.length > 1) {svg.id = arguments[1]};
+          return svg;
+        }
+
+        function makeLines(parent, number) {
+          //----------------------------------------------------//
+          //Makes the ellipses that point to the hours          //
+          //element-> parent: the <svg> element into which      //
+          //  the ellipses will be inserted                     //
+          //integer-> number: the number of ellipses to make    //
+          //----------------------------------------------------//
+
+          let angle = 0;
+          let change = 360 / number;
+
+          for (let i = 0; i < number; i++) {
+            let line = makeSVG("line");
+            line.setAttribute("x1", "50");
+            line.setAttribute("y1", "20");
+            line.setAttribute("x2", "50");
+            line.setAttribute("y2", "5");
+            line.classList.add("line");
+            line.style.transform = "rotate(" + angle + "deg)";
+            parent.appendChild(line);
+
+            angle += change;
+          }
+        }
+
+        function makeHand(parent, id) {
+          //----------------------------------------------------//
+          //Makes the hands of the clock                        //
+          //element-> parent: the <svg> element into which      //
+          //  the hand will be inserted                         //
+          //string-> id: the id of the hand                     //
+          //----------------------------------------------------//
+
+          let hand = makeSVG("rect", id);
+          hand.classList.add("hands");
+          parent.appendChild(hand);
+
+          return hand;
+        }
+
+        let compass = document.getElementById("compass");
+
+        let svg = document.getElementById("svgCompass");
+
+        makeLines(svg, 8);
+
+        let hand = makeHand(svg, "direction");
+        hand.style.transform = "rotateZ(" + deg + "deg)";
+      }
+
+      function display(weatherData) {
+        let weatherDiv = document.getElementById("weatherDiv");
+        weatherDiv.style.filter = "opacity(1)";
+        console.log("opacity updated");
+
+        let cityDiv = document.getElementById("cityDiv");
+        let city = weatherData.name;
+        cityDiv.innerHTML = city;
+
+        let tempSpan = document.getElementById("tempSpan");
+        let temp = (weatherData.main.temp - 273.15);
+        tempSpan.innerHTML = temp + "°C";
+
+        let weatherIcon = document.getElementById("weatherIcon");
+        let icon = weatherData.weather[0].icon;
+        weatherIcon.src = "http://openweathermap.org/img/wn/" + icon + "@2x.png";
+
+        let weatherDescription = document.getElementById("weatherDescription");
+        weatherDesc = weatherData.weather[0].description;
+        weatherDescription.innerHTML = weatherDesc;
+
+        let humiditySpan = document.getElementById("humiditySpan");
+        let humidity = weatherData.main.humidity;
+        humiditySpan.innerHTML = humidity + "%";
+
+        makeCompass(weatherData.wind.deg);
+
+        let windDiv = document.getElementById("windDiv");
+        let windSpeed = weatherData.wind.speed;
+        windDiv.innerHTML = windSpeed + " m/s";
+      }
+
+
+
+
+      //.wind.deg
+      //.wind.speed
+      //.main.humidity
+      //.weather[0].icon 50n
+      /*function display() {
+        let weatherDiv = document.getElementById("weatherDiv");
+        weatherDiv.style.filter = "opacity(1)";
+
+        let cityDiv = document.getElementById("cityDiv");
+        let city = "Jilotepec de Molina Enríquez";
+        cityDiv.innerHTML = city;
+
+        let tempSpan = document.getElementById("tempSpan");
+        let temp = 15;
+        tempSpan.innerHTML = temp + "°C";
+
+        let weatherIcon = document.getElementById("weatherIcon");
+        let icon = "50n";
+        weatherIcon.src = "http://openweathermap.org/img/wn/" + icon + "@2x.png";
+
+        let weatherDescription = document.getElementById("weatherDescription");
+        weatherDesc = "Mist";
+        weatherDescription.innerHTML = weatherDesc;
+
+        let humiditySpan = document.getElementById("humiditySpan");
+        humidity = 90;
+        humiditySpan.innerHTML = humidity + "%";
+        makeCompass(90);
+        let windDiv = document.getElementById("windDiv");
+        windDiv.innerHTML = 1.3 + " m/s";
+      }*/
+  </script>
+</html>
