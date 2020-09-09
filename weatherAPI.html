@@ -191,6 +191,11 @@
       function makeCompass(deg) {
 
         function makeSVG(type) {
+          //----------------------------------------------------//
+          //Makes an SVG element                                //
+          //string-> type: type of SVG element to be created    //
+          //----------------------------------------------------//
+
           let svg = document.createElementNS("http://www.w3.org/2000/svg", type);
           if (arguments.length > 1) {svg.id = arguments[1]};
           return svg;
@@ -256,7 +261,7 @@
         cityDiv.innerHTML = city;
 
         let tempSpan = document.getElementById("tempSpan");
-        let temp = (weatherData.main.temp - 273.15);
+        let temp = (weatherData.main.temp - 273.15).toFixed(2);
         tempSpan.innerHTML = temp + "°C";
 
         let weatherIcon = document.getElementById("weatherIcon");
