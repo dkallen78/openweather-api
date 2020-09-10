@@ -1,4 +1,6 @@
-fetch("https://api.openweathermap.org/data/2.5/weather?id=3526501&appid=9a5d233125e5fb51927ccee602c54cb4")
+let cityID = "3526501"
+let apiKey = "9a5d233125e5fb51927ccee602c54cb4"
+fetch(`https://api.openweathermap.org/data/2.5/weather?id=${cityID}&appid=${apiKey}`)
   .then(function(response) {
     return response.json();
   })
@@ -9,6 +11,11 @@ fetch("https://api.openweathermap.org/data/2.5/weather?id=3526501&appid=9a5d2331
   });
 
 function makeCompass(deg) {
+  //------------------------------------------------------//
+  //Draws the final bits of the compass and points the    //
+  //  hand in the right direction                         //
+  //integer-> deg: direction the wind is blowing          //
+  //------------------------------------------------------//
 
   function makeSVG(type) {
     //----------------------------------------------------//
@@ -68,7 +75,7 @@ function makeCompass(deg) {
   makeLines(svg, 8);
 
   let hand = makeHand(svg, "direction");
-  hand.style.transform = "rotateZ(" + deg + "deg)";
+  hand.style.transform = "rotateZ(" + (deg + 180) + "deg)";
 }
 
 function display(weatherData) {

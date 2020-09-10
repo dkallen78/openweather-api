@@ -1,6 +1,9 @@
 body {
   display: flex;
   justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
   background-image: linear-gradient(to right, blue 15%, white 135%);
 }
 
