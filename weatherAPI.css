@@ -134,3 +134,13 @@ body {
   padding: .25rem;
   text-align: center;
 }
+
+#timeDiv {
+  grid-column: 1 / 3;
+  grid-row: 4 / 5;
+  color: white;
+  font-size: 2rem;
+  border: .1rem solid black;
+  border-radius: .5rem;
+  text-align: center;
+}

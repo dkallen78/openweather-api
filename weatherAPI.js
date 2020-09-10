@@ -112,6 +112,12 @@ function display(weatherData) {
   let windDiv = document.getElementById("windDiv");
   let windSpeed = weatherData.wind.speed;
   windDiv.innerHTML = windSpeed + " m/s";
+
+  let timeDiv = document.getElementById("timeDiv");
+  let now = new Date();
+  let hour = now.getHours().toString().padStart(2, "0");
+  let minute = now.getMinutes().toString().padStart(2, "0");
+  timeDiv.innerHTML = `${now.toDateString()} ${hour}:${minute}`;
 }
 
 
