@@ -119,7 +119,10 @@ function display(weatherData) {
   let minute = now.getMinutes().toString().padStart(2, "0");
   timeDiv.innerHTML = `${now.toDateString()} ${hour}:${minute}`;
 
-  if (now.getTime() > weatherData.sys.sunset || now.getTime() < weatherData.sys.sunrise) {
+  if ((now.getTime() / 1000) > weatherData.sys.sunset || (now.getTime() / 1000) < weatherData.sys.sunrise) {
+    console.log(`now: ${now.getTime()}`);
+    console.log(`sunset: ${weatherData.sys.sunset}`);
+    console.log(`sunrise: ${weatherData.sys.sunrise}`);
     document.body.style.backgroundImage = "radial-gradient(circle at 10% 10%, white 5%, gray, black 15%)";
   }
 }
