@@ -4,7 +4,10 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-  background-image: linear-gradient(to right, blue 15%, white 135%);
+  background-image: radial-gradient(circle at 10% 10%,
+                                    yellow,
+                                    white 5%,
+                                    blue 15%);
 }
 
 #weatherDiv {

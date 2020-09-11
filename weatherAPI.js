@@ -118,6 +118,10 @@ function display(weatherData) {
   let hour = now.getHours().toString().padStart(2, "0");
   let minute = now.getMinutes().toString().padStart(2, "0");
   timeDiv.innerHTML = `${now.toDateString()} ${hour}:${minute}`;
+
+  if (now.getTime() > weatherData.sys.sunset || now.getTime() < weatherData.sys.sunrise) {
+    document.body.style.backgroundImage = "radial-gradient(circle at 10% 10%, white 5%, gray, black 15%)";
+  }
 }
 
 
